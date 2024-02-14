@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="src">
+    <file>finger_print_green.png</file>
+    <file>back_icon.png</file>
+    <file>UltraLOGO.png</file>
+    <file>background.jpg</file>
+  </qresource>
+</RCC>
