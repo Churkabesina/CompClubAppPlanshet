@@ -5,7 +5,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
 
-def execute_error():
+def execute_error_msg():
     app = QApplication([])
     error_msg = QMessageBox()
     error_msg.setIcon(QMessageBox.Icon.Critical)
