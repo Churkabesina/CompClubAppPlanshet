@@ -73,6 +73,9 @@
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 255);</string>
        </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
       </widget>
      </item>
      <item>

@@ -1,6 +1,19 @@
 import datetime
 import os
 import re
+import sys
+from PyQt6.QtWidgets import QApplication, QMessageBox
+
+
+def execute_error():
+    app = QApplication([])
+    error_msg = QMessageBox()
+    error_msg.setIcon(QMessageBox.Icon.Critical)
+    error_msg.setWindowTitle('Ошибка запуска')
+    error_msg.setText('Во время запуска произошла ошибка\n-> log.txt')
+    error_msg.buttonClicked.connect(lambda: app.exit())
+    error_msg.show()
+    sys.exit(app.exec())
 
 
 def write_error_log(e):
@@ -9,8 +22,8 @@ def write_error_log(e):
 
 
 def load_settings_app() -> dict[str, str]:
-    settings_names = ['ip', 'score_limit', 'port', 'balance', 'path_to_bat']
-    re_pattern_setting = re.compile(r'\w+=\w.+')
+    settings_names = ['ip', 'score_limit', 'port', 'limit_balance', 'path_to_bat']
+    re_pattern_setting = re.compile(r'\S+=\S+')
     settings = dict()
 
     if not os.path.isfile('settings.ini'):
@@ -18,7 +31,7 @@ def load_settings_app() -> dict[str, str]:
             f.write(f'score_limit=750\n'
                     f'ip=185.35.130.253\n'
                     f'port=80\n'
-                    f'balance=100\n'
+                    f'limit_balance=100\n'
                     f'path_to_bat=')
 
     with open('settings.ini', 'r', encoding='UTF-8') as f:
@@ -32,6 +45,9 @@ def load_settings_app() -> dict[str, str]:
             raise Exception('Неверно заданы настройки в settings.ini\n'
                             '#score_limit=750\n'
                             '#ip=<ip>\n'
-                            '#port=<your_port>')
+                            '#port=<your_port>\n'
+                            '#limit_balance=100\n'
+                            '#path_to_bat=C:\\Gizmo\\file.bat\n'
+                            '#Заполняйте все без пробелов и кавычек')
 
     return settings

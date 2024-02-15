@@ -4,7 +4,7 @@ import os
 from PyQt6 import QtCore
 from PyQt6.QtCore import QSize, QThread, QObject, pyqtSignal, pyqtSlot, QTimer, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFrame, QLineEdit, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFrame, QPushButton
 
 from ui import main_window, main_frame, sign_in_by_login_frame, sign_in_by_biometric_frame, background
 
@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.main_window.pushButton.clicked.connect(self.back_button_click)
         self.main_frame.main_frame.sign_in_by_login_button.clicked.connect(self.sign_in_by_login_click)
         self.main_frame.main_frame.sign_in_by_biometric_button.clicked.connect(self.sign_in_by_biometric_click)
-        self.login_frame.login_frame.enter_pushbutton.clicked.connect(self.send_data)
+        self.login_frame.login_frame.enter_pushbutton.clicked.connect(self.check_data_by_login)
 
     # slot войти по логину
     def sign_in_by_login_click(self):
@@ -70,11 +70,11 @@ class MainWindow(QMainWindow):
         self.main_frame.show()
 
     # перехват даблкликов на мышке
-    def mouseDoubleClickEvent(self, a0):
-        if a0.button() == Qt.MouseButton.LeftButton:
-            self.biometric_frame.biometric_frame.pushButton.setIcon(QIcon('src/finger_print_green.png'))
-        else:
-            self.biometric_frame.biometric_frame.pushButton.setIcon(QIcon('src/finger_print_red.png'))
+    # def mouseDoubleClickEvent(self, a0):
+    #     if a0.button() == Qt.MouseButton.LeftButton:
+    #         self.biometric_frame.biometric_frame.pushButton.setIcon(QIcon('src/finger_print_green.png'))
+    #     else:
+    #         self.biometric_frame.biometric_frame.pushButton.setIcon(QIcon('src/finger_print_red.png'))
 
     # перехват нажатия на F11
     def keyPressEvent(self, event):
@@ -84,26 +84,30 @@ class MainWindow(QMainWindow):
             else:
                 self.showFullScreen()
     
-    def send_data(self):
-        button: QPushButton = self.sender()
-        login = self.login_frame.login_frame.lineEdit_login.text()
-        password = self.login_frame.login_frame.lineEdit_password.text()
-        otvet = API.check_data_login(login=login, password=password)
-        if otvet[0]:
-            button.setText(otvet[1])
-            button.setEnabled(False)
-            self.login_frame.login_frame.lineEdit_login.setEnabled(False)
-            self.login_frame.login_frame.lineEdit_password.setEnabled(False)
-            self.main_window.pushButton.setEnabled(False)
-            os.system(f'{SETTINGS["path_to_bat"]}')
-            QTimer.singleShot(2000, self.back_button_click)
-        else:
-            button.setText(otvet[1])
-            button.setEnabled(False)
-            self.login_frame.login_frame.lineEdit_login.setEnabled(False)
-            self.login_frame.login_frame.lineEdit_password.setEnabled(False)
-            self.main_window.pushButton.setEnabled(False)
-            QTimer.singleShot(2000, self.back_button_click)
+    def check_data_by_login(self):
+        try:
+            login = self.login_frame.login_frame.lineEdit_login.text()
+            password = self.login_frame.login_frame.lineEdit_password.text()
+            api_response = API.check_data_login(login=login, password=password)
+            if api_response[0]:
+                os.system(f'{SETTINGS["path_to_bat"]}')
+                self.lock_login_interface(api_response[1])
+            else:
+                self.lock_login_interface(api_response[1])
+        except Exception as e:
+            utils.write_error_log(e)
+            exit()
+
+    def lock_login_interface(self, text_for_button: str):
+        self.login_frame.login_frame.enter_pushbutton.setText(text_for_button)
+        self.login_frame.login_frame.enter_pushbutton.setEnabled(False)
+        self.login_frame.login_frame.lineEdit_login.setEnabled(False)
+        self.login_frame.login_frame.lineEdit_password.setEnabled(False)
+        self.main_window.pushButton.setEnabled(False)
+        QTimer.singleShot(2000, self.back_button_click)
+
+    def check_data_by_biometric(self):
+        pass
 
 
 class MainFrame(QFrame):
@@ -128,9 +132,14 @@ class BiometricFrame(QFrame):
 
 
 if __name__ == '__main__':
-    SETTINGS = utils.load_settings_app()
-    IP = f'{SETTINGS["ip"]}:{SETTINGS["port"]}'
-    API = api_requests.CompClubRequests(IP, balance=SETTINGS["balance"])
+    try:
+        SETTINGS = utils.load_settings_app()
+        IP = f'{SETTINGS["ip"]}:{SETTINGS["port"]}'
+        API = api_requests.CompClubRequests(IP, limit_balance=float(SETTINGS["limit_balance"]))
+    except Exception as e:
+        utils.write_error_log(e)
+        utils.execute_error()
+
     app = QApplication(sys.argv)
     window = MainWindow()
     window.showFullScreen()

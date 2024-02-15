@@ -2,12 +2,11 @@ import requests
 
 
 class CompClubRequests:
-    def __init__(self, ip: str, balance: float):
+    def __init__(self, ip: str, limit_balance: float):
         self.IP = ip
         self.SESSION = requests.Session()
         self.SESSION.auth = ('admin', 'admin')
-        self.limit_balance = balance
-        
+        self.limit_balance = limit_balance
 
     def get_username_and_acc_linking(self, userid: str) -> tuple[str, bool]:
 
@@ -32,40 +31,40 @@ class CompClubRequests:
         # вставить текст отпечатка
         response = self.SESSION.post(f'http://{self.IP}/api/v2.0/users/{userid}/notes', json=body)
 
-
     def get_finger_tmp_by_userid(self, userid: str) -> str:
 
         response = self.SESSION.get(f'http://{self.IP}/api/users/{userid}/note')
         tmp = response.json()['result'][0]['text']
         return tmp
 
-    def check_data_login(self, login: str, password: str) -> bool:
-        #провера на валидность
+    def check_data_login(self, login: str, password: str) -> tuple[bool, str]:
+
+        # провера на валидность
         res = self.SESSION.get(f'http://{self.IP}/api/users/{login}/{password}/valid')
         checking = int(res.json()['result']['result'])
         if checking != 0:
-            return (False, 'Неверный логин или пароль')
+            return False, 'Неверный логин или пароль'
         
-        #проверка на человек внутри
+        # проверка на человек внутри
         user_id = res.json()['result']['identity']['userId']
         res = self.SESSION.get(f'http://{self.IP}/api/usersessions/activeinfo')
         for i in res.json()['result']:
             if i['userId'] == user_id:
-                return (True, 'Запускается батник')
+                return True, 'Запускается батник'
         
-        #проверка на баланс
+        # проверка на баланс
         res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/balance')
         if res.json()['result']['deposits'] < self.limit_balance:
-            return(False, 'Не хватает средств')
+            return False, 'Не хватает средств'
         
-        #проверка на абонемент
+        # проверка на абонемент
         res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/producttime')
         for i in res.json()['result']:
-            productName = i['productName'].lower().replace('.', '')
-            if 'vip' in productName or 'вип' in productName:
+            product_name = i['productName'].lower().replace('.', '')
+            if 'vip' in product_name or 'вип' in product_name:
                 if i['isDepleted']==i['isDeleted']==i['isVoided']==i['isExpired']==False:
-                    return (True, 'Запускается батник')
-        return (False, 'Нет вип или она кончилась')
+                    return True, 'Запускается батник'
+        return False, 'Нет вип или она кончилась'
 
         
     
