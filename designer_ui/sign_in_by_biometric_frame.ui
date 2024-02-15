@@ -48,7 +48,8 @@
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(35, 35, 35);
-border: 0px;</string>
+border: 1px solid rgb(255, 255, 255);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string/>
@@ -70,7 +71,9 @@ border: 0px;</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true"> background-color: rgb(35, 35, 35);</string>
+        <string notr="true"> background-color: rgb(35, 35, 35);
+border-radius: 10px;
+border: 1px solid rgb(255, 255, 255);</string>
        </property>
        <property name="text">
         <string>Приложите палец</string>

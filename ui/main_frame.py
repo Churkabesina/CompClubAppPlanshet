@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'designer_ui/main_frame.ui'
+# Form implementation generated from reading ui file './designer_ui/main_frame.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -19,8 +19,8 @@ class Ui_Frame(object):
         sizePolicy.setHeightForWidth(Frame.sizePolicy().hasHeightForWidth())
         Frame.setSizePolicy(sizePolicy)
         self.horizontalLayout = QtWidgets.QHBoxLayout(Frame)
-        self.horizontalLayout.setContentsMargins(0, 9, 0, -1)
-        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setSpacing(20)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.sign_in_by_login_button = QtWidgets.QPushButton(parent=Frame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
@@ -30,6 +30,9 @@ class Ui_Frame(object):
         self.sign_in_by_login_button.setSizePolicy(sizePolicy)
         self.sign_in_by_login_button.setMinimumSize(QtCore.QSize(0, 400))
         self.sign_in_by_login_button.setMaximumSize(QtCore.QSize(16777215, 16666666))
+        self.sign_in_by_login_button.setStyleSheet("border-top-right-radius: 10px;\n"
+"border-bottom-right-radius: 10px;\n"
+" border-right: 1px solid rgb(255, 255, 255);")
         self.sign_in_by_login_button.setObjectName("sign_in_by_login_button")
         self.horizontalLayout.addWidget(self.sign_in_by_login_button)
         self.sign_in_by_biometric_button = QtWidgets.QPushButton(parent=Frame)
@@ -40,7 +43,10 @@ class Ui_Frame(object):
         self.sign_in_by_biometric_button.setSizePolicy(sizePolicy)
         self.sign_in_by_biometric_button.setMinimumSize(QtCore.QSize(0, 400))
         self.sign_in_by_biometric_button.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.sign_in_by_biometric_button.setStyleSheet("  border-left: 1px solid rgb(255, 255, 255);")
+        self.sign_in_by_biometric_button.setStyleSheet("  border-left: 1px solid rgb(255, 255, 255);\n"
+"border-top-left-radius: 10px;\n"
+"border-bottom-left-radius: 10px;")
+        self.sign_in_by_biometric_button.setFlat(False)
         self.sign_in_by_biometric_button.setObjectName("sign_in_by_biometric_button")
         self.horizontalLayout.addWidget(self.sign_in_by_biometric_button)
 

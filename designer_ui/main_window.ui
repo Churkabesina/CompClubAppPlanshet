@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {font: 87 italic 14pt &quot;Segoe UI Black&quot;;}
+   <string notr="true">QWidget {font: 87 italic 19pt &quot;Segoe UI Black&quot;;}
 QWidget#centralwidget {background-image: url(:/src/background.jpg);}
 
 QLabel {color: rgb(255, 255, 255);}
@@ -38,6 +38,7 @@ QPushButton {
   background-color: rgb(35, 35, 35);
   border-top: 1px solid rgb(255, 255, 255);
   border-bottom: 1px solid rgb(255, 255, 255);
+  broder-radius: 0px;
   transition: transform 0.15s;
   transform-style: preserve-3d;
 }
@@ -91,7 +92,12 @@ QPushButton:pressed {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">border: 0px</string>
+            <string notr="true">border: 0px;
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+border-top: 1px solid rgb(255, 255, 255);
+border-bottom: 1px solid rgb(255, 255, 255);
+border-right: 1px solid rgb(255, 255, 255);</string>
            </property>
            <property name="text">
             <string/>

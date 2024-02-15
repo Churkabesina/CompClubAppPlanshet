@@ -21,15 +21,18 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>20</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -51,6 +54,11 @@
        <width>16777215</width>
        <height>16666666</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+ border-right: 1px solid rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string>Вход по логину</string>
@@ -78,10 +86,15 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">  border-left: 1px solid rgb(255, 255, 255);</string>
+      <string notr="true">  border-left: 1px solid rgb(255, 255, 255);
+border-top-left-radius: 10px;
+border-bottom-left-radius: 10px;</string>
      </property>
      <property name="text">
       <string>Вход по биометрии</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
      </property>
     </widget>
    </item>

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'designer_ui/main_window.ui'
+# Form implementation generated from reading ui file './designer_ui/main_window.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -13,8 +13,8 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1341, 716)
-        MainWindow.setStyleSheet("QWidget {font: 87 italic 14pt \"Segoe UI Black\";}\n"
-"QWidget#centralwidget {background-image: url(./src/background.jpg);}\n"
+        MainWindow.setStyleSheet("QWidget {font: 87 italic 19pt \"Segoe UI Black\";}\n"
+"QWidget#centralwidget {background-image: url(:/src/background.jpg);}\n"
 "\n"
 "QLabel {color: rgb(255, 255, 255);}\n"
 "\n"
@@ -37,6 +37,7 @@ class Ui_MainWindow(object):
 "  background-color: rgb(35, 35, 35);\n"
 "  border-top: 1px solid rgb(255, 255, 255);\n"
 "  border-bottom: 1px solid rgb(255, 255, 255);\n"
+"  broder-radius: 0px;\n"
 "  transition: transform 0.15s;\n"
 "  transform-style: preserve-3d;\n"
 "}\n"
@@ -64,7 +65,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.pushButton = QtWidgets.QPushButton(parent=self.frame)
         self.pushButton.setMaximumSize(QtCore.QSize(16777215, 100))
-        self.pushButton.setStyleSheet("border: 0px")
+        self.pushButton.setStyleSheet("border: 0px;\n"
+"border-top-right-radius: 10px;\n"
+"border-bottom-right-radius: 10px;\n"
+"border-top: 1px solid rgb(255, 255, 255);\n"
+"border-bottom: 1px solid rgb(255, 255, 255);\n"
+"border-right: 1px solid rgb(255, 255, 255);")
         self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout_2.addWidget(self.pushButton)
@@ -72,7 +78,7 @@ class Ui_MainWindow(object):
         self.logo = QtWidgets.QLabel(parent=self.centralwidget)
         self.logo.setMinimumSize(QtCore.QSize(1000, 250))
         self.logo.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.logo.setStyleSheet("image: url(./src/UltraLOGO.png);")
+        self.logo.setStyleSheet("image: url(:/src/UltraLOGO.png);")
         self.logo.setText("")
         self.logo.setObjectName("logo")
         self.horizontalLayout.addWidget(self.logo)

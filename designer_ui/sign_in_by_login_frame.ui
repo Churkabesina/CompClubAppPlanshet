@@ -99,6 +99,11 @@
          <height>40</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">border-radius: 10px;
+border-right: 1px solid rgb(255, 255, 255);
+border-left: 1px solid rgb(255, 255, 255);</string>
+       </property>
        <property name="text">
         <string>Войти</string>
        </property>

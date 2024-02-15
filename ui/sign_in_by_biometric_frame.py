@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'designer_ui/sign_in_by_biometric_frame.ui'
+# Form implementation generated from reading ui file './designer_ui/sign_in_by_biometric_frame.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -32,7 +32,8 @@ class Ui_Frame(object):
         sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
         self.pushButton.setSizePolicy(sizePolicy)
         self.pushButton.setStyleSheet("background-color: rgb(35, 35, 35);\n"
-"border: 0px;")
+"border: 1px solid rgb(255, 255, 255);\n"
+"border-radius: 10px;")
         self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout.addWidget(self.pushButton)
@@ -43,7 +44,9 @@ class Ui_Frame(object):
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
         self.label_2.setMinimumSize(QtCore.QSize(336, 100))
-        self.label_2.setStyleSheet(" background-color: rgb(35, 35, 35);")
+        self.label_2.setStyleSheet(" background-color: rgb(35, 35, 35);\n"
+"border-radius: 10px;\n"
+"border: 1px solid rgb(255, 255, 255);")
         self.label_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.verticalLayout.addWidget(self.label_2)

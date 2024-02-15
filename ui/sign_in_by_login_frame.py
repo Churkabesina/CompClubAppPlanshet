@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'designer_ui/sign_in_by_login_frame.ui'
+# Form implementation generated from reading ui file './designer_ui/sign_in_by_login_frame.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
@@ -41,6 +41,9 @@ class Ui_Frame(object):
         self.verticalLayout.addItem(spacerItem1)
         self.enter_pushbutton = QtWidgets.QPushButton(parent=Frame)
         self.enter_pushbutton.setMinimumSize(QtCore.QSize(0, 40))
+        self.enter_pushbutton.setStyleSheet("border-radius: 10px;\n"
+"border-right: 1px solid rgb(255, 255, 255);\n"
+"border-left: 1px solid rgb(255, 255, 255);")
         self.enter_pushbutton.setObjectName("enter_pushbutton")
         self.verticalLayout.addWidget(self.enter_pushbutton)
         self.horizontalLayout_2.addLayout(self.verticalLayout)
