@@ -36,6 +36,7 @@ class Ui_Frame(object):
         self.lineEdit_password.setMinimumSize(QtCore.QSize(0, 40))
         self.lineEdit_password.setStyleSheet("color: rgb(255, 255, 255);")
         self.lineEdit_password.setObjectName("lineEdit_password")
+        self.lineEdit_password.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.verticalLayout.addWidget(self.lineEdit_password)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
         self.verticalLayout.addItem(spacerItem1)

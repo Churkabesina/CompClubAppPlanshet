@@ -1,9 +1,10 @@
 import sys
+import os
 
 from PyQt6 import QtCore
-from PyQt6.QtCore import QSize, QThread, QObject, pyqtSignal, pyqtSlot, Qt
+from PyQt6.QtCore import QSize, QThread, QObject, pyqtSignal, pyqtSlot, QTimer, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFrame
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFrame, QLineEdit, QPushButton
 
 from ui import main_window, main_frame, sign_in_by_login_frame, sign_in_by_biometric_frame, background
 
@@ -34,6 +35,7 @@ class MainWindow(QMainWindow):
         self.main_window.pushButton.clicked.connect(self.back_button_click)
         self.main_frame.main_frame.sign_in_by_login_button.clicked.connect(self.sign_in_by_login_click)
         self.main_frame.main_frame.sign_in_by_biometric_button.clicked.connect(self.sign_in_by_biometric_click)
+        self.login_frame.login_frame.enter_pushbutton.clicked.connect(self.send_data)
 
     # slot войти по логину
     def sign_in_by_login_click(self):
@@ -51,8 +53,18 @@ class MainWindow(QMainWindow):
 
     # slot вернуться назад
     def back_button_click(self):
+        self.login_frame.login_frame.enter_pushbutton.setText('ВОЙТИ')
+        self.login_frame.login_frame.lineEdit_login.setEnabled(True)
+        self.login_frame.login_frame.lineEdit_password.setEnabled(True)
+        self.login_frame.login_frame.enter_pushbutton.setEnabled(True)
+        self.login_frame.login_frame.lineEdit_login.setText('')
+        self.login_frame.login_frame.lineEdit_password.setText('')
+        
+        self.main_window.pushButton.setEnabled(True)
+        
         current_widget = self.main_window.centralwidget.layout().itemAt(2).widget()
         current_widget.hide()
+        
         self.main_window.pushButton.hide()
         self.main_window.centralwidget.layout().replaceWidget(current_widget, self.main_frame)
         self.main_frame.show()
@@ -71,6 +83,27 @@ class MainWindow(QMainWindow):
                 self.showNormal()
             else:
                 self.showFullScreen()
+    
+    def send_data(self):
+        button: QPushButton = self.sender()
+        login = self.login_frame.login_frame.lineEdit_login.text()
+        password = self.login_frame.login_frame.lineEdit_password.text()
+        otvet = API.check_data_login(login=login, password=password)
+        if otvet[0]:
+            button.setText(otvet[1])
+            button.setEnabled(False)
+            self.login_frame.login_frame.lineEdit_login.setEnabled(False)
+            self.login_frame.login_frame.lineEdit_password.setEnabled(False)
+            self.main_window.pushButton.setEnabled(False)
+            os.system(f'{SETTINGS["path_to_bat"]}')
+            QTimer.singleShot(2000, self.back_button_click)
+        else:
+            button.setText(otvet[1])
+            button.setEnabled(False)
+            self.login_frame.login_frame.lineEdit_login.setEnabled(False)
+            self.login_frame.login_frame.lineEdit_password.setEnabled(False)
+            self.main_window.pushButton.setEnabled(False)
+            QTimer.singleShot(2000, self.back_button_click)
 
 
 class MainFrame(QFrame):
@@ -95,6 +128,9 @@ class BiometricFrame(QFrame):
 
 
 if __name__ == '__main__':
+    SETTINGS = utils.load_settings_app()
+    IP = f'{SETTINGS["ip"]}:{SETTINGS["port"]}'
+    API = api_requests.CompClubRequests(IP, balance=SETTINGS["balance"])
     app = QApplication(sys.argv)
     window = MainWindow()
     window.showFullScreen()

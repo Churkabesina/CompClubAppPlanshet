@@ -8,8 +8,8 @@ def write_error_log(e):
         f.write(f'{datetime.datetime.now().strftime("%x %H:%M:%S")}\n{str(e)}\n\n')
 
 
-def load_settings_register_app() -> dict[str, str]:
-    settings_names = ['ip', 'score_limit', 'port']
+def load_settings_app() -> dict[str, str]:
+    settings_names = ['ip', 'score_limit', 'port', 'balance', 'path_to_bat']
     re_pattern_setting = re.compile(r'\w+=\w.+')
     settings = dict()
 
@@ -17,7 +17,9 @@ def load_settings_register_app() -> dict[str, str]:
         with open('settings.ini', 'w', encoding='UTF-8') as f:
             f.write(f'score_limit=750\n'
                     f'ip=185.35.130.253\n'
-                    f'port=80')
+                    f'port=80\n'
+                    f'balance=100\n'
+                    f'path_to_bat=')
 
     with open('settings.ini', 'r', encoding='UTF-8') as f:
         for line in f:
