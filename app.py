@@ -138,7 +138,7 @@ if __name__ == '__main__':
         API = api_requests.CompClubRequests(IP, limit_balance=float(SETTINGS["limit_balance"]))
     except Exception as e:
         utils.write_error_log(e)
-        utils.execute_error()
+        utils.execute_error_msg()
 
     app = QApplication(sys.argv)
     window = MainWindow()
