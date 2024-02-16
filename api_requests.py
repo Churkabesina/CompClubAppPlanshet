@@ -2,11 +2,12 @@ import requests
 
 
 class CompClubRequests:
-    def __init__(self, ip: str, limit_balance: float):
+    def __init__(self, ip: str, limit_balance: float, product_ids: str):
         self.IP = ip
         self.SESSION = requests.Session()
         self.SESSION.auth = ('admin', 'admin')
         self.limit_balance = limit_balance
+        self.product_ids = [int(x) for x in product_ids.split(',')]
 
     def get_username_and_acc_linking(self, userid: str) -> tuple[str, bool]:
 
@@ -55,29 +56,43 @@ class CompClubRequests:
         # проверка на баланс
         res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/balance')
         if res.json()['result']['deposits'] < self.limit_balance:
-            return False, 'Не хватает средств'
+            # проверка на абонемент>>>
+            res = self.SESSION.get(f'http://{self.IP}/api/v2.0/users/{user_id}/userusagetime')
+            for i in res.json()['result']:
+                if i['timeOffer']:
+                    if int(i['timeOffer']['productId']) in self.product_ids:
+                        return True, 'Есть ВИП'
+            return False, 'Нет вип и не хватает баланса'
+            # <<<проверка на абонемент
+        else:
+            return True, 'Хватает средств'
+
         
-        # проверка на абонемент
-        res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/producttime')
+    
+    def check_data_finger(self, user_id: str) -> tuple[bool, str]:
+        # проверка на человек внутри
+        res = self.SESSION.get(f'http://{self.IP}/api/usersessions/activeinfo')
         for i in res.json()['result']:
-            product_name = i['productName'].lower().replace('.', '')
-            if 'vip' in product_name or 'вип' in product_name:
-                if i['isDepleted']==i['isDeleted']==i['isVoided']==i['isExpired']==False:
-                    return True, 'Запускается батник'
-        return False, 'Нет вип или она кончилась'
-
+            if i['userId'] == user_id:
+                return True, 'Запускается батник'
         
-    
+        # проверка на баланс
+        res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/balance')
+        if res.json()['result']['deposits'] < self.limit_balance:
+            # проверка на абонемент>>>
+            res = self.SESSION.get(f'http://{self.IP}/api/v2.0/users/{user_id}/userusagetime')
+            for i in res.json()['result']:
+                if i['timeOffer']:
+                    if int(i['timeOffer']['productId']) in self.product_ids:
+                        return True, 'Есть ВИП'
+            return False, 'Нет вип и не хватает баланса'
+            # <<<проверка на абонемент
+        else:
+            return True, 'Хватает средств'
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    def check_data_finger(self) -> bool:
-        pass
+    def get_all_ids(self):
+        all_userids = []
+        res = self.SESSION.get(f'http://{self.IP}/api/v2.0/users?IsDisabled=false&IsDeleted=false')
+        for i in res.json()['result']['data']:
+            all_userids.append(str(i['id']))
+        return all_userids
