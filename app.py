@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         self.main_window = main_window.Ui_MainWindow()
         self.main_window.setupUi(self)
         self.setWindowTitle('UltraCyberArena')
+        self.setWindowIcon(QIcon('src/fingerprint.png'))
         self.main_window.pushButton.setIcon(QIcon('src/back_icon.png'))
         self.main_window.pushButton.setIconSize(QSize(70, 90))
         self.main_window.pushButton.hide()
@@ -47,26 +48,31 @@ class MainWindow(QMainWindow):
         self.worker = Worker()
         self.worker_thread = QThread()
         self.worker.compare_completed.connect(self.compare_completed_slot)
+        self.worker.statement_signal.connect(self.statement_update)
         self.request_compare.connect(self.worker.identify_finger)
         self.worker.moveToThread(self.worker_thread)
         self.worker_thread.start()
 
-    def compare_completed_slot(self, user_id: str, is_ok: bool):
-        if is_ok:
-            start_bat, text = API.check_data_finger(user_id=user_id)
-            if start_bat:
-                self.biometric_frame.biometric_frame.pushButton.setIcon(self.green_finger_icon)
-                os.system(f'{SETTINGS["path_to_bat"]}')
-                self.biometric_frame.biometric_frame.label_2.setText(text)
-                self.lock_biometric_interface()
-                return
-            self.biometric_frame.biometric_frame.pushButton.setIcon(self.red_finger_icon)
-            self.biometric_frame.biometric_frame.label_2.setText(text)
-            self.lock_biometric_interface()
-        else:
-            self.biometric_frame.biometric_frame.pushButton.setIcon(self.red_finger_icon)
-            self.biometric_frame.biometric_frame.label_2.setText('ПАЛЕЦ НЕ РАСПОЗНАН')
-            self.lock_biometric_interface()
+    def statement_update(self, statement_text: str):
+        self.biometric_frame.biometric_frame.label_2.setText(statement_text)
+
+    def compare_completed_slot(self, is_ok: bool, user_id: str):
+        try:
+            if is_ok:
+                start_bat, text = API.check_data_finger(user_id=user_id)
+                if start_bat:
+                    self.biometric_frame.biometric_frame.pushButton.setIcon(self.green_finger_icon)
+                    os.system(f'{SETTINGS["path_to_bat"]}')
+                    self.lock_biometric_interface(text)
+                    return
+                self.biometric_frame.biometric_frame.pushButton.setIcon(self.red_finger_icon)
+                self.lock_biometric_interface(text)
+            else:
+                self.biometric_frame.biometric_frame.pushButton.setIcon(self.red_finger_icon)
+                self.lock_biometric_interface('ПАЛЕЦ НЕ РАСПОЗНАН')
+        except Exception as e:
+            utils.write_error_log(e)
+            exit()
 
     # slot войти по логину
     def sign_in_by_login_click(self):
@@ -92,7 +98,7 @@ class MainWindow(QMainWindow):
         self.login_frame.login_frame.lineEdit_login.setText('')
         self.login_frame.login_frame.lineEdit_password.setText('')
         self.biometric_frame.biometric_frame.pushButton.setIcon(self.white_finger_icon)
-        self.biometric_frame.biometric_frame.label_2.setText('ПРИЛОЖИТЕ ПАЛЕЦ')
+        self.biometric_frame.biometric_frame.label_2.setText('Приложите палец')
         self.worker_thread.exit()
         self.main_window.pushButton.setEnabled(True)
         current_widget = self.main_window.centralwidget.layout().itemAt(2).widget()
@@ -159,8 +165,10 @@ class BiometricFrame(QFrame):
         self.biometric_frame = sign_in_by_biometric_frame.Ui_Frame()
         self.biometric_frame.setupUi(self)
 
+
 class Worker(QObject):
     compare_completed = pyqtSignal(bool, str)
+    statement_signal = pyqtSignal(str)
 
     try:
         zkfp2 = ZKFP2()
@@ -170,13 +178,13 @@ class Worker(QObject):
         utils.write_error_log(e)
         exit()
 
-
     @pyqtSlot()
     def identify_finger(self):
         try:
             while True:
                 capture = Worker.zkfp2.AcquireFingerprint()
                 if capture:
+                    self.statement_signal.emit('Палец захвачен, ждите')
                     tmp, img = capture
                     break
             finger_print = bytes(tmp)
@@ -188,10 +196,11 @@ class Worker(QObject):
                 if res > SCORE_LIMIT:
                     self.compare_completed.emit(True, user_id)
                     return
-            self.compare_completed.emit(False)
+            self.compare_completed.emit(False, 'no_user')
         except Exception as e:
             utils.write_error_log(e)
             exit()
+
 
 if __name__ == '__main__':
     try:

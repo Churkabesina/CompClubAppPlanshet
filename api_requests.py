@@ -51,7 +51,7 @@ class CompClubRequests:
         res = self.SESSION.get(f'http://{self.IP}/api/usersessions/activeinfo')
         for i in res.json()['result']:
             if i['userId'] == user_id:
-                return True, 'Запускается батник'
+                return True, 'Активная сессия, проходите'
         
         # проверка на баланс
         res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/balance')
@@ -61,20 +61,19 @@ class CompClubRequests:
             for i in res.json()['result']:
                 if i['timeOffer']:
                     if int(i['timeOffer']['productId']) in self.product_ids:
-                        return True, 'Есть ВИП'
-            return False, 'Нет вип и не хватает баланса'
+                        return True, 'У вас VIP, проходите'
+            return False, 'У вас нет ВИП и не хватает баланса'
             # <<<проверка на абонемент
         else:
-            return True, 'Хватает средств'
+            return True, 'Достаточно средств, проходите'
 
-        
-    
     def check_data_finger(self, user_id: str) -> tuple[bool, str]:
+
         # проверка на человек внутри
         res = self.SESSION.get(f'http://{self.IP}/api/usersessions/activeinfo')
         for i in res.json()['result']:
-            if i['userId'] == user_id:
-                return True, 'Запускается батник'
+            if str(i['userId']) == user_id:
+                return True, 'Активная сессия, проходите'
         
         # проверка на баланс
         res = self.SESSION.get(f'http://{self.IP}/api/users/{user_id}/balance')
@@ -84,11 +83,11 @@ class CompClubRequests:
             for i in res.json()['result']:
                 if i['timeOffer']:
                     if int(i['timeOffer']['productId']) in self.product_ids:
-                        return True, 'Есть ВИП'
-            return False, 'Нет вип и не хватает баланса'
+                        return True, 'У вас VIP, проходите'
+            return False, 'У вас нет ВИП и не хватает баланса'
             # <<<проверка на абонемент
         else:
-            return True, 'Хватает средств'
+            return True, 'Достаточно средств, проходите'
 
     def get_all_ids(self):
         all_userids = []
