@@ -148,14 +148,14 @@ border-right: 1px solid rgb(255, 255, 255);</string>
      </layout>
     </item>
     <item>
-     <spacer name="vertical_spacer_1">
+     <spacer name="walk_spacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>150</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>

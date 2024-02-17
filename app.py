@@ -12,6 +12,7 @@ import api_requests
 import utils
 from pyzkfp import ZKFP2
 import base64
+import time
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +20,9 @@ class MainWindow(QMainWindow):
     
     def __init__(self):
         super().__init__()
+
+        self.where_are_you = True
+
         self.main_window = main_window.Ui_MainWindow()
         self.main_window.setupUi(self)
         self.setWindowTitle('UltraCyberArena')
@@ -29,9 +33,11 @@ class MainWindow(QMainWindow):
 
         self.main_frame = MainFrame()
         self.main_window.centralwidget.layout().insertWidget(2, self.main_frame)
-        # self.main_frame.show()
+        self.main_frame.show()
 
         self.login_frame = LoginFrame()
+        self.main_window.centralwidget.layout().insertWidget(1, self.login_frame)
+        self.login_frame.hide()
 
         self.biometric_frame = BiometricFrame()
         self.red_finger_icon = QIcon('src/finger_print_red.png')
@@ -76,9 +82,9 @@ class MainWindow(QMainWindow):
 
     # slot войти по логину
     def sign_in_by_login_click(self):
+        self.where_are_you = False
         self.main_window.pushButton.show()
         self.main_frame.hide()
-        self.main_window.centralwidget.layout().replaceWidget(self.main_frame, self.login_frame)
         self.login_frame.show()
 
     # slot войти по биометрии
@@ -99,12 +105,16 @@ class MainWindow(QMainWindow):
         self.login_frame.login_frame.lineEdit_password.setText('')
         self.biometric_frame.biometric_frame.pushButton.setIcon(self.white_finger_icon)
         self.biometric_frame.biometric_frame.label_2.setText('Приложите палец')
-        self.worker_thread.exit()
+        self.worker_thread.terminate()
         self.main_window.pushButton.setEnabled(True)
-        current_widget = self.main_window.centralwidget.layout().itemAt(2).widget()
-        current_widget.hide()
+        if not self.where_are_you:
+            self.login_frame.hide()
+            self.main_frame.show()
+            self.where_are_you = True
+        else:
+            self.biometric_frame.hide()
+            self.main_window.centralwidget.layout().replaceWidget(self.biometric_frame, self.main_frame)
         self.main_window.pushButton.hide()
-        self.main_window.centralwidget.layout().replaceWidget(current_widget, self.main_frame)
         self.worker_thread.wait()
         self.worker_thread.start()
         self.main_frame.show()
@@ -207,7 +217,8 @@ if __name__ == '__main__':
         SETTINGS = utils.load_settings_app()
         SCORE_LIMIT = int(SETTINGS['score_limit'])
         IP = f'{SETTINGS["ip"]}:{SETTINGS["port"]}'
-        API = api_requests.CompClubRequests(IP, limit_balance=float(SETTINGS["limit_balance"]), product_ids=SETTINGS['product_ids'])
+        AUTH_DATA = (SETTINGS['login_api'], SETTINGS['password_api'])
+        API = api_requests.CompClubRequests(IP, limit_balance=float(SETTINGS["limit_balance"]), product_ids=SETTINGS['product_ids'], auth_data=AUTH_DATA)
     except Exception as e:
         utils.write_error_log(e)
         utils.execute_error_msg()

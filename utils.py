@@ -22,7 +22,7 @@ def write_error_log(e):
 
 
 def load_settings_app() -> dict[str, str]:
-    settings_names = ['ip', 'score_limit', 'port', 'limit_balance', 'path_to_bat', 'product_ids']
+    settings_names = ['ip', 'score_limit', 'port', 'limit_balance', 'path_to_bat', 'product_ids', 'login_api', 'password_api']
     re_pattern_setting = re.compile(r'\S+=\S+')
     settings = dict()
 
@@ -33,7 +33,9 @@ def load_settings_app() -> dict[str, str]:
                     f'port=80\n'
                     f'limit_balance=100\n'
                     f'path_to_bat=C:\n'
-                    f'product_ids=11,10,9')
+                    f'product_ids=11,10,9\n'
+                    f'login_api=admin\n'
+                    f'password_api=admin')
 
     with open('settings.ini', 'r', encoding='UTF-8') as f:
         for line in f:
@@ -49,6 +51,7 @@ def load_settings_app() -> dict[str, str]:
                             '#port=<your_port>\n'
                             '#limit_balance=100\n'
                             '#path_to_bat=C:\\Gizmo\\file.bat\n'
+                            '#product_ids=11,10,9\n'
                             '#Заполняйте все без пробелов и кавычек, product_ids через запятую')
 
     return settings

@@ -2,10 +2,10 @@ import requests
 
 
 class CompClubRequests:
-    def __init__(self, ip: str, limit_balance: float, product_ids: str):
+    def __init__(self, ip: str, limit_balance: float, product_ids: str, auth_data: tuple):
         self.IP = ip
         self.SESSION = requests.Session()
-        self.SESSION.auth = ('admin', 'admin')
+        self.SESSION.auth = auth_data
         self.limit_balance = limit_balance
         self.product_ids = [int(x) for x in product_ids.split(',')]
 
